@@ -22,11 +22,11 @@ define("IP_DATABASE_ROOT_DIR", __DIR__);
 class IpLocation
 {
     /**
-     * @var
+     * @var 
      */
     private static $ipV4Path;
     /**
-     * @var
+     * @var 
      */
     private static $ipV6Path;
 

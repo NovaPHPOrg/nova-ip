@@ -1,11 +1,8 @@
 <?php
 
-declare(strict_types=1);
-/*
- * Copyright (c) 2023. Ankio. All Rights Reserved.
- */
 
 namespace nova\plugin\ip;
+
 
 class StringParser
 {
@@ -88,11 +85,11 @@ class StringParser
      * ];
      *
      *
-     * @param        $location
-     * @param  bool  $withOriginal debug 用，是否返回原始数据
+     * @param $location
+     * @param bool $withOriginal debug 用，是否返回原始数据
      * @return array
      */
-    public static function parse($location, $withOriginal = false): array
+    public static function parse($location, $withOriginal = false)
     {
         $org = $location;
         $result = [];
@@ -109,7 +106,7 @@ class StringParser
 
         //ipv6 会包含中国 故意去掉
 
-        if (str_starts_with($location['country'], "中国")) {
+        if (strpos($location['country'], "中国") === 0) {
             $location['country'] = str_replace("中国", "", $location['country']);
         }
 
@@ -126,20 +123,20 @@ class StringParser
             //省
             $location['province'] = $_tmp_province[0]; //河北
 
-            if (str_contains($_tmp_province[1], $separatorCity)) {
+            if (strpos($_tmp_province[1], $separatorCity) !== false) {
                 $_tmp_city = explode($separatorCity, $_tmp_province[1]);
                 //市
                 $location['city'] = $_tmp_city[0] . $separatorCity;
 
                 //县
                 if (isset($_tmp_city[1])) {
-                    if (str_contains($_tmp_city[1], $separatorCounty)) {
+                    if (strpos($_tmp_city[1], $separatorCounty) !== false) {
                         $_tmp_county = explode($separatorCounty, $_tmp_city[1]);
                         $location['county'] = $_tmp_county[0] . $separatorCounty;
                     }
 
                     //区
-                    if (!$location['county'] && str_contains($_tmp_city[1], $separatorDistrict)) {
+                    if (!$location['county'] && strpos($_tmp_city[1], $separatorDistrict) !== false) {
                         $_tmp_qu = explode($separatorDistrict, $_tmp_city[1]);
                         $location['county'] = $_tmp_qu[0] . $separatorDistrict;
                     }
@@ -149,7 +146,7 @@ class StringParser
             //处理内蒙古不带省份类型的和直辖市
             foreach (self::$dictProvince as $key => $value) {
 
-                if (str_contains($location['country'], $value)) {
+                if (false !== strpos($location['country'], $value)) {
                     $isChina = true;
                     $location['province'] = $value;
 
@@ -164,21 +161,22 @@ class StringParser
 
                             $_tmp_province[1] = self::lTrim($_tmp_province[1], $separatorCity);
 
-                            if (str_contains($_tmp_province[1], $separatorDistrict)) {
+
+                            if (strpos($_tmp_province[1], $separatorDistrict) !== false) {
                                 $_tmp_qu = explode($separatorDistrict, $_tmp_province[1]);
 
                                 //解决 休息休息校区 变成城市区域
                                 $isHitBlackTail = false;
                                 foreach (self::$dictDistrictBlackTails as $blackTail) {
                                     //尾
-                                    if (\mb_substr($_tmp_qu[0], -\mb_strlen($blackTail)) == $blackTail) {
+                                    if (mb_substr($_tmp_qu[0], -mb_strlen($blackTail)) == $blackTail) {
                                         $isHitBlackTail = true;
                                         break;
                                     }
                                 }
 
                                 //校区，学区
-                                if ((!$isHitBlackTail) && \mb_strlen($_tmp_qu[0]) < 5) {
+                                if ((!$isHitBlackTail) && mb_strlen($_tmp_qu[0]) < 5) {
                                     //有点尴尬
                                     $location['city'] = $_tmp_qu[0] . $separatorDistrict;
                                 }
@@ -193,7 +191,7 @@ class StringParser
                         $_tmp_city = self::lTrim($_tmp_city, $separatorCity);
 
                         //内蒙古 类型的 获取市县信息
-                        if (str_contains($_tmp_city, $separatorCity)) {
+                        if (strpos($_tmp_city, $separatorCity) !== false) {
                             //市
                             $_tmp_city = explode($separatorCity, $_tmp_city);
 
@@ -201,13 +199,13 @@ class StringParser
 
                             //县
                             if (isset($_tmp_city[1])) {
-                                if (str_contains($_tmp_city[1], $separatorCounty)) {
+                                if (strpos($_tmp_city[1], $separatorCounty) !== false) {
                                     $_tmp_county = explode($separatorCounty, $_tmp_city[1]);
                                     $location['county'] = $_tmp_county[0] . $separatorCounty;
                                 }
 
                                 //区
-                                if (!$location['county'] && str_contains($_tmp_city[1], $separatorDistrict)) {
+                                if (!$location['county'] && strpos($_tmp_city[1], $separatorDistrict) !== false) {
                                     $_tmp_qu = explode($separatorDistrict, $_tmp_city[1]);
                                     $location['county'] = $_tmp_qu[0] . $separatorDistrict;
                                 }
@@ -223,6 +221,7 @@ class StringParser
         if ($isChina) {
             $location['country'] = '中国';
         }
+
 
         $result['ip'] = $location['ip'];
 
@@ -242,17 +241,9 @@ class StringParser
         return $result;
     }
 
-    private static function lTrim($word, $w)
-    {
-        $pos = \mb_stripos($word, $w);
-        if ($pos === 0) {
-            $word = \mb_substr($word, 1);
-        }
-        return $word;
-    }
 
     /**
-     * @param         $str
+     * @param $str
      * @return string
      */
     private static function getIsp($str)
@@ -260,7 +251,7 @@ class StringParser
         $ret = '';
 
         foreach (self::$dictIsp as $k => $v) {
-            if (str_contains($str, $v)) {
+            if (false !== strpos($str, $v)) {
                 $ret = $v;
                 break;
             }
@@ -268,5 +259,14 @@ class StringParser
 
         return $ret;
     }
+
+    private static function lTrim($word, $w) {
+        $pos = mb_stripos($word, $w);
+        if ($pos === 0) {
+            $word = mb_substr($word, 1);
+        }
+        return $word;
+    }
+
 
 }

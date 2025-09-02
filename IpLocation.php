@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
 
 namespace nova\plugin\ip;
 
-use nova\plugin\ip\IpParser\QQwry;
 use nova\plugin\ip\IpParser\IpV6wry;
+use nova\plugin\ip\IpParser\QQwry;
 
 /**
  *
@@ -14,7 +15,8 @@ use nova\plugin\ip\IpParser\IpV6wry;
  * Class IpLocation
  * @package nova\plugin\ip
  */
-class IpLocation {
+class IpLocation
+{
     /**
      * @var
      */
@@ -25,12 +27,13 @@ class IpLocation {
     private static $ipV6Path;
 
     /**
-     * @param $ip
-     * @param string $ipV4Path
-     * @param string $ipV6Path
+     * @param         $ip
+     * @param  string $ipV4Path
+     * @param  string $ipV6Path
      * @return array
      */
-    public static function getLocationWithoutParse($ip, $ipV4Path='', $ipV6Path='') {
+    public static function getLocationWithoutParse($ip, $ipV4Path = '', $ipV6Path = '')
+    {
 
         //if  ipV4Path 记录位置
         if (strlen($ipV4Path)) {
@@ -46,7 +49,7 @@ class IpLocation {
             $ins = new QQwry();
             $ins->setDBPath(self::getIpV4Path());
             $location = $ins->getIp($ip);
-        } else if (self::isIpV6($ip)) {
+        } elseif (self::isIpV6($ip)) {
             $ins = new IpV6wry();
             $ins->setDBPath(self::getIpV6Path());
             $location = $ins->getIp($ip);
@@ -61,12 +64,13 @@ class IpLocation {
     }
 
     /**
-     * @param $ip
-     * @param string $ipV4Path
-     * @param string $ipV6Path
+     * @param              $ip
+     * @param  string      $ipV4Path
+     * @param  string      $ipV6Path
      * @return array|mixed
      */
-    public static function getLocation($ip, $ipV4Path='', $ipV6Path='') {
+    public static function getLocation($ip, $ipV4Path = '', $ipV6Path = '')
+    {
         $location = self::getLocationWithoutParse($ip, $ipV4Path, $ipV6Path);
         if (isset($location['error'])) {
             return $location;
@@ -93,38 +97,43 @@ class IpLocation {
     /**
      * @return string
      */
-    private static function getIpV4Path() {
-        return self::$ipV4Path ? : self::src('/libs/qqwry.dat');
+    private static function getIpV4Path()
+    {
+        return self::$ipV4Path ?: self::src('/libs/qqwry.dat');
     }
 
     /**
      * @return string
      */
-    private static function getIpV6Path() {
-        return self::$ipV6Path ? : self::src('/libs/ipv6wry.db');
+    private static function getIpV6Path()
+    {
+        return self::$ipV6Path ?: self::src('/libs/ipv6wry.db');
     }
 
     /**
-     * @param $ip
+     * @param       $ip
      * @return bool
      */
-    private static function isIpV4($ip) {
+    private static function isIpV4($ip)
+    {
         return false !== filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
     }
 
     /**
-     * @param $ip
+     * @param       $ip
      * @return bool
      */
-    private static function isIpV6($ip) {
+    private static function isIpV6($ip)
+    {
         return false !== filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
     }
 
     /**
-     * @param $filename
+     * @param         $filename
      * @return string
      */
-    public static function src($filename) {
+    public static function src($filename)
+    {
         return __DIR__.$filename;
     }
 

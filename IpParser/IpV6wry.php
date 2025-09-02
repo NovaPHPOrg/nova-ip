@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  *
  */
+
 namespace nova\plugin\ip\IpParser;
 
 /**
@@ -17,7 +20,7 @@ class IpV6wry implements IpParserInterface
     }
 
     /**
-     * @param $ip
+     * @param        $ip
      * @return array
      */
     public function getIp($ip)
@@ -37,7 +40,6 @@ class IpV6wry implements IpParserInterface
         ];
         return $return;
     }
-
 
     private static $filePath;
 
@@ -85,7 +87,7 @@ class IpV6wry implements IpParserInterface
 
     /**
      * query ipv6
-     * @param $ip
+     * @param        $ip
      * @return array
      */
     public static function query($ip)
@@ -124,8 +126,8 @@ class IpV6wry implements IpParserInterface
 
     /**
      * 读取记录
-     * @param $fd
-     * @param $offset
+     * @param           $fd
+     * @param           $offset
      * @return string[]
      */
     public static function read_record($fd, $offset)
@@ -147,8 +149,8 @@ class IpV6wry implements IpParserInterface
 
     /**
      * 读取地区
-     * @param $fd
-     * @param $offset
+     * @param         $fd
+     * @param         $offset
      * @return string
      */
     public static function read_location($fd, $offset)
@@ -171,11 +173,11 @@ class IpV6wry implements IpParserInterface
 
     /**
      * 查找 ip 所在的索引
-     * @param $fd
-     * @param $ip_num1
-     * @param $ip_num2
-     * @param $l
-     * @param $r
+     * @param        $fd
+     * @param        $ip_num1
+     * @param        $ip_num2
+     * @param        $l
+     * @param        $r
      * @return mixed
      */
     public static function find($fd, $ip_num1, $ip_num2, $l, $r)
@@ -184,14 +186,20 @@ class IpV6wry implements IpParserInterface
             return $l;
         }
         $m = intval(($l + $r) / 2);
-        $m_ip1 = static::read8($fd, static::$index_start_offset + $m * (static::$iplen + static::$offlen),
-            static::$iplen);
+        $m_ip1 = static::read8(
+            $fd,
+            static::$index_start_offset + $m * (static::$iplen + static::$offlen),
+            static::$iplen
+        );
         $m_ip2 = 0;
         if (static::$iplen <= 8) {
             $m_ip1 <<= 8 * (8 - static::$iplen);
         } else {
-            $m_ip2 = static::read8($fd, static::$index_start_offset + $m * (static::$iplen + static::$offlen) + 8,
-                static::$iplen - 8);
+            $m_ip2 = static::read8(
+                $fd,
+                static::$index_start_offset + $m * (static::$iplen + static::$offlen) + 8,
+                static::$iplen - 8
+            );
             $m_ip2 <<= 8 * (16 - static::$iplen);
         }
         if (static::uint64cmp($ip_num1, $m_ip1) < 0) {

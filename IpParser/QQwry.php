@@ -1,7 +1,10 @@
 <?php
+
+declare(strict_types=1);
 /**
  *
  */
+
 namespace nova\plugin\ip\IpParser;
 
 /**
@@ -10,14 +13,13 @@ namespace nova\plugin\ip\IpParser;
  */
 class QQwry implements IpParserInterface
 {
-
     public function setDBPath($filePath)
     {
         $this->filePath = $filePath;
     }
 
     /**
-     * @param $ip
+     * @param        $ip
      * @return array
      */
     public function getIp($ip)
@@ -68,7 +70,6 @@ class QQwry implements IpParserInterface
      */
     private $totalIp;
 
-
     /**
      * 如果ip错误
      * <code>
@@ -78,7 +79,7 @@ class QQwry implements IpParserInterface
      * $result['area']          最完整的信息 如 中国河北省邢台市威县新科网吧(北外街)
      * </code>
      *
-     * @param $ip
+     * @param        $ip
      * @return array
      */
     public function getAddr($ip)
@@ -117,8 +118,8 @@ class QQwry implements IpParserInterface
      * 根据所给 IP 地址或域名返回所在地区信息
      *
      * @access public
-     * @param string $ip
-     * @return array ip country area beginip endip
+     * @param  string $ip
+     * @return array  ip country area beginip endip
      */
     private function getLocation($ip)
     {
@@ -223,7 +224,7 @@ class QQwry implements IpParserInterface
      * 返回压缩后可进行比较的IP地址
      *
      * @access private
-     * @param string $ip
+     * @param  string $ip
      * @return string
      */
     private function packIp($ip)
@@ -238,7 +239,7 @@ class QQwry implements IpParserInterface
      * php 的 ip2long 这个函数有问题
      * 133.205.0.0 ==>> 2244804608
      *
-     * @param string $ip 要转换的 ip 地址
+     * @param  string $ip 要转换的 ip 地址
      * @return int    转换完成的数字
      */
     private function ip2long($ip)
@@ -265,7 +266,7 @@ class QQwry implements IpParserInterface
      * 返回读取的字符串
      *
      * @access private
-     * @param string $data
+     * @param  string $data
      * @return string
      */
     private function getString($data = "")

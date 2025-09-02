@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace nova\plugin\ip;
-
 
 class StringParser
 {
@@ -85,8 +85,8 @@ class StringParser
      * ];
      *
      *
-     * @param $location
-     * @param bool $withOriginal debug 用，是否返回原始数据
+     * @param        $location
+     * @param  bool  $withOriginal debug 用，是否返回原始数据
      * @return array
      */
     public static function parse($location, $withOriginal = false)
@@ -161,7 +161,6 @@ class StringParser
 
                             $_tmp_province[1] = self::lTrim($_tmp_province[1], $separatorCity);
 
-
                             if (strpos($_tmp_province[1], $separatorDistrict) !== false) {
                                 $_tmp_qu = explode($separatorDistrict, $_tmp_province[1]);
 
@@ -222,7 +221,6 @@ class StringParser
             $location['country'] = '中国';
         }
 
-
         $result['ip'] = $location['ip'];
 
         $result['country'] = $location['country'];
@@ -241,9 +239,8 @@ class StringParser
         return $result;
     }
 
-
     /**
-     * @param $str
+     * @param         $str
      * @return string
      */
     private static function getIsp($str)
@@ -260,13 +257,13 @@ class StringParser
         return $ret;
     }
 
-    private static function lTrim($word, $w) {
+    private static function lTrim($word, $w)
+    {
         $pos = mb_stripos($word, $w);
         if ($pos === 0) {
             $word = mb_substr($word, 1);
         }
         return $word;
     }
-
 
 }

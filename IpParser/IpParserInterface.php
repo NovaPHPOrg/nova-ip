@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace nova\plugin\ip\IpParser;
 
 interface IpParserInterface
 {
-    function setDBPath($filePath);
+    public function setDBPath($filePath);
 
     /**
-     * @param $ip
+     * @param        $ip
      * @return mixed ['ip', 'country', 'area']
      */
-    function getIp($ip);
+    public function getIp($ip);
 }

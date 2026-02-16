@@ -42,6 +42,9 @@
 namespace nova\plugin\ip;
 use Exception;
 use nova\plugin\ip\ip2region\xdb\Searcher;
+use ReflectionClass;
+use function nova\framework\dump;
+
 /**
  * ip2region 主类
  *
@@ -232,7 +235,8 @@ class Ip2Region
         $dbPath = $version === 'v4' ? $this->dbPathV4 : $this->dbPathV6;
 
         // 3. 默认路径：检查 db/ 目录下的数据库文件
-        $dbFile = dirname(__DIR__) . '/db/ip2region_' . $version . '.xdb';
+        $dbFile = dirname(__DIR__) . '/ip/db/ip2region_' . $version . '.xdb';
+      //  dump($dbFile);
         if (file_exists($dbFile)) {
             return $dbFile;
         }
@@ -291,7 +295,7 @@ class Ip2Region
                 default:
                     return Searcher::newWithFileOnly($ipVersion, $file);
             }
-        } catch (\Exception $e) {
+        } catch (\RuntimeException $e) {
             // 如果是数据库文件相关的错误，直接传递原始错误信息
             if (
                 strpos($e->getMessage(), 'IPv6 查询需要下载') !== false ||

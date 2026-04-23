@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * IPv6 处理类
  *
@@ -73,10 +75,10 @@ class IPv6
      *
      * 初始化IPv6实例的各个属性
      *
-     * @param int $id IP版本ID
-     * @param string $name IP版本名称
-     * @param int $bytes IP地址字节长度
-     * @param int $segmentIndexSize 段索引大小
+     * @param int    $id               IP版本ID
+     * @param string $name             IP版本名称
+     * @param int    $bytes            IP地址字节长度
+     * @param int    $segmentIndexSize 段索引大小
      *
      * @example
      * ```php
@@ -97,10 +99,10 @@ class IPv6
      * 将IP地址字节与缓冲区中指定偏移量的字节进行比较
      * 专门针对IPv6地址的字节比较，使用Util::ipSubCompare方法
      *
-     * @param string $ip 要比较的IP地址字节
-     * @param string $buff 字节缓冲区
-     * @param int $offset 缓冲区中的起始偏移量
-     * @return int 返回比较结果：-1表示ip小于buff中的字节，0表示相等，1表示ip大于buff中的字节
+     * @param  string $ip     要比较的IP地址字节
+     * @param  string $buff   字节缓冲区
+     * @param  int    $offset 缓冲区中的起始偏移量
+     * @return int    返回比较结果：-1表示ip小于buff中的字节，0表示相等，1表示ip大于buff中的字节
      *
      * @example
      * ```php
@@ -146,7 +148,7 @@ class IPv6
      * 将IPv6地址字符串转换为二进制字节格式
      * 这是Util::parseIP的便捷方法
      *
-     * @param string $ipString 要解析的IPv6地址字符串
+     * @param  string      $ipString 要解析的IPv6地址字符串
      * @return string|null 返回二进制字节格式的IP地址，解析失败返回 null
      *
      * @example
@@ -166,7 +168,7 @@ class IPv6
      * 将IPv6地址字符串转换为128位长整型值
      * 使用大端序字节序进行转换
      *
-     * @param string $ipString 要转换的IPv6地址字符串
+     * @param  string   $ipString 要转换的IPv6地址字符串
      * @return int|null 返回转换后的长整型值，转换失败返回 null
      *
      * @example
@@ -190,7 +192,7 @@ class IPv6
      * 将128位长整型值转换为IPv6地址字符串
      * 使用大端序字节序进行转换
      *
-     * @param int $long 要转换的长整型值
+     * @param  int          $long 要转换的长整型值
      * @return string|false 返回转换后的IPv6地址字符串，转换失败返回 false
      *
      * @example
@@ -216,8 +218,8 @@ class IPv6
      * 验证给定的字符串是否为有效的IPv6地址
      * 这是Util::isIPv6的便捷方法
      *
-     * @param string $ipString 要检查的IP地址字符串
-     * @return bool 返回 true 表示是有效的IPv6地址，false 表示不是
+     * @param  string $ipString 要检查的IP地址字符串
+     * @return bool   返回 true 表示是有效的IPv6地址，false 表示不是
      *
      * @example
      * ```php

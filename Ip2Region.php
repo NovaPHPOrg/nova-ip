@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * ip2region - 高性能IP地址定位库
  *
@@ -40,10 +42,13 @@
 // 通过 Composer autoload 自动加载
 
 namespace nova\plugin\ip;
+
 use Exception;
+
+use function nova\framework\dump;
+
 use nova\plugin\ip\ip2region\xdb\Searcher;
 use ReflectionClass;
-use function nova\framework\dump;
 
 /**
  * ip2region 主类
@@ -63,18 +68,17 @@ class Ip2Region
     private $dbPathV4 = null;
     private $dbPathV6 = null;
 
-
     /**
      * 构造函数
      *
      * 初始化 IP2Region 实例，配置缓存策略和自定义数据库路径
      *
-     * @param string $cachePolicy 缓存策略，可选值：
-     * - 'file': 文件缓存（默认）
-     * - 'vectorIndex': 向量索引缓存
-     * - 'content': 内容缓存
-     * @param string|null $dbPathV4 IPv4 数据库自定义路径，为 null 时使用默认路径
-     * @param string|null $dbPathV6 IPv6 数据库自定义路径，为 null 时使用默认路径
+     * @param string      $cachePolicy 缓存策略，可选值：
+     *                                 - 'file': 文件缓存（默认）
+     *                                 - 'vectorIndex': 向量索引缓存
+     *                                 - 'content': 内容缓存
+     * @param string|null $dbPathV4    IPv4 数据库自定义路径，为 null 时使用默认路径
+     * @param string|null $dbPathV6    IPv6 数据库自定义路径，为 null 时使用默认路径
      *
      * @example
      * ```php
@@ -118,8 +122,8 @@ class Ip2Region
      *
      * 检测给定的IP地址是IPv4还是IPv6格式
      *
-     * @param string $ip 要检测的IP地址
-     * @return string 返回 'v4' 表示IPv4，'v6' 表示IPv6
+     * @param  string     $ip 要检测的IP地址
+     * @return string     返回 'v4' 表示IPv4，'v6' 表示IPv6
      * @throws \Exception 当IP地址格式无效时抛出异常
      *
      * @example
@@ -146,8 +150,8 @@ class Ip2Region
      * 根据IP版本自动创建或返回对应的搜索引擎实例
      * 采用懒加载模式，只有在实际查询时才创建搜索引擎
      *
-     * @param string $ip 要查询的IP地址
-     * @return Searcher 返回对应版本的搜索引擎实例
+     * @param  string     $ip 要查询的IP地址
+     * @return Searcher   返回对应版本的搜索引擎实例
      * @throws \Exception 当IP地址无效或搜索引擎创建失败时抛出异常
      *
      * @example
@@ -175,7 +179,6 @@ class Ip2Region
         }
     }
 
-
     /**
      * 获取数据库文件
      *
@@ -184,8 +187,8 @@ class Ip2Region
      * 2. vendor 目录：下载的数据库文件（vendor/bin/ip2data/ 目录）
      * 3. 默认路径：内置数据库文件（db/ 目录）
      *
-     * @param string $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
-     * @return string 返回可用的数据库文件路径
+     * @param  string     $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
+     * @return string     返回可用的数据库文件路径
      * @throws \Exception 当找不到可用的数据库文件时抛出异常
      *
      * @example
@@ -236,7 +239,7 @@ class Ip2Region
 
         // 3. 默认路径：检查 db/ 目录下的数据库文件
         $dbFile = dirname(__DIR__) . '/ip/db/ip2region_' . $version . '.xdb';
-      //  dump($dbFile);
+        //  dump($dbFile);
         if (file_exists($dbFile)) {
             return $dbFile;
         }
@@ -254,8 +257,8 @@ class Ip2Region
      *
      * 根据指定版本创建对应的搜索引擎实例，支持IPv4和IPv6
      *
-     * @param string $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
-     * @return Searcher 返回搜索引擎实例
+     * @param  string     $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
+     * @return Searcher   返回搜索引擎实例
      * @throws \Exception 当数据库文件不存在或搜索引擎创建失败时抛出异常
      *
      * @example
@@ -313,9 +316,9 @@ class Ip2Region
      * 使用内存模式查询IP地址的地理位置信息
      * 这是最常用的查询方法，返回标准格式的结果
      *
-     * @param string $ip 要查询的IP地址（支持IPv4和IPv6）
-     * @return array 返回包含城市ID和地区信息的数组
-     *  格式：['city_id' => int, 'region' => string]
+     * @param  string     $ip 要查询的IP地址（支持IPv4和IPv6）
+     * @return array      返回包含城市ID和地区信息的数组
+     *                    格式：['city_id' => int, 'region' => string]
      * @throws \Exception 当IP地址无效或查询失败时抛出异常
      *
      * @example
@@ -341,9 +344,9 @@ class Ip2Region
      * 一次性查询多个IP地址的地理位置信息
      * 支持IPv4和IPv6混合查询，自动处理查询失败的情况
      *
-     * @param array $ips 要查询的IP地址数组
+     * @param  array $ips 要查询的IP地址数组
      * @return array 返回以IP地址为键，地区信息为值的关联数组
-     *  查询失败的IP地址对应的值为空字符串 ""
+     *               查询失败的IP地址对应的值为空字符串 ""
      *
      * @example
      * ```php
@@ -375,8 +378,8 @@ class Ip2Region
      * 专门用于查询IPv6地址的地理位置信息
      * 包含IPv6地址格式验证，确保只处理有效的IPv6地址
      *
-     * @param string $ip 要查询的IPv6地址
-     * @return string 返回地理位置字符串，查询失败返回空字符串 ""
+     * @param  string     $ip 要查询的IPv6地址
+     * @return string     返回地理位置字符串，查询失败返回空字符串 ""
      * @throws \Exception 当不是有效的IPv6地址时抛出异常
      *
      * @example
@@ -401,17 +404,17 @@ class Ip2Region
      * 查询IP地址并返回结构化的地理位置信息
      * 将原始查询结果解析为包含国家、省份、城市、ISP等信息的数组
      *
-     * @param string $ip 要查询的IP地址（支持IPv4和IPv6）
+     * @param  string     $ip 要查询的IP地址（支持IPv4和IPv6）
      * @return array|null 返回包含详细地理信息的数组，查询失败返回 null
-     *      格式：[
-     *        'country' => '国家',
-     *        'province' => '省份',
-     *        'city' => '城市',
-     *        'isp' => 'ISP服务商',
-     *        'ip' => '原始IP地址',
-     *        'version' => 'IP版本(v4/v6)',
-     *        'region' => '' // 已弃用，原用于世界级区域，现已不再使用
-     *      ]
+     *                    格式：[
+     *                    'country' => '国家',
+     *                    'province' => '省份',
+     *                    'city' => '城市',
+     *                    'isp' => 'ISP服务商',
+     *                    'ip' => '原始IP地址',
+     *                    'version' => 'IP版本(v4/v6)',
+     *                    'region' => '' // 已弃用，原用于世界级区域，现已不再使用
+     *                    ]
      *
      * @example
      * ```php
@@ -452,8 +455,8 @@ class Ip2Region
      *
      * 使用PHP内置函数验证给定字符串是否为有效的IPv6地址格式
      *
-     * @param string $ip 要检查的IP地址字符串
-     * @return bool 返回 true 表示是有效的IPv6地址，false 表示不是
+     * @param  string $ip 要检查的IP地址字符串
+     * @return bool   返回 true 表示是有效的IPv6地址，false 表示不是
      *
      * @example
      * ```php
@@ -474,15 +477,15 @@ class Ip2Region
      * 用于性能监控和调试
      *
      * @return array 返回包含统计信息的数组
-     *  格式：[
-     *    'memory_usage' => int,      // 当前内存使用量（字节）
-     *    'peak_memory' => int,       // 峰值内存使用量（字节）
-     *    'v4_io_count' => int,       // IPv4 IO操作次数
-     *    'v6_io_count' => int,       // IPv6 IO操作次数
-     *    'v4_loaded' => bool,        // IPv4搜索引擎是否已加载
-     *    'v6_loaded' => bool,        // IPv6搜索引擎是否已加载
-     *    'cache_policy' => string    // 当前缓存策略
-     *  ]
+     *               格式：[
+     *               'memory_usage' => int,      // 当前内存使用量（字节）
+     *               'peak_memory' => int,       // 峰值内存使用量（字节）
+     *               'v4_io_count' => int,       // IPv4 IO操作次数
+     *               'v6_io_count' => int,       // IPv6 IO操作次数
+     *               'v4_loaded' => bool,        // IPv4搜索引擎是否已加载
+     *               'v6_loaded' => bool,        // IPv6搜索引擎是否已加载
+     *               'cache_policy' => string    // 当前缓存策略
+     *               ]
      *
      * @example
      * ```php
@@ -522,12 +525,12 @@ class Ip2Region
      * 提供人性化的字节格式显示
      *
      * @return array 返回包含内存使用信息的数组
-     *  格式：[
-     *    'current' => string,    // 当前内存使用量（格式化后）
-     *    'peak' => string,       // 峰值内存使用量（格式化后）
-     *    'v4_loaded' => bool,    // IPv4搜索引擎是否已加载
-     *    'v6_loaded' => bool     // IPv6搜索引擎是否已加载
-     *  ]
+     *               格式：[
+     *               'current' => string,    // 当前内存使用量（格式化后）
+     *               'peak' => string,       // 峰值内存使用量（格式化后）
+     *               'v4_loaded' => bool,    // IPv4搜索引擎是否已加载
+     *               'v6_loaded' => bool     // IPv6搜索引擎是否已加载
+     *               ]
      *
      * @example
      * ```php
@@ -555,8 +558,8 @@ class Ip2Region
      *
      * 将字节数转换为人类可读的格式（B、KB、MB、GB、TB）
      *
-     * @param int $bytes 要格式化的字节数
-     * @param int $precision 小数位数，默认为2位
+     * @param  int    $bytes     要格式化的字节数
+     * @param  int    $precision 小数位数，默认为2位
      * @return string 返回格式化后的字符串，如 "1.23 MB"
      *
      * @example
@@ -575,14 +578,13 @@ class Ip2Region
         return round($bytes, $precision) . ' ' . $units[$i];
     }
 
-
     /**
      * 简单查询方法（兼容旧版本）
      *
      * 提供简化的查询接口，返回格式化的地理位置字符串
      * 自动处理空值和内网IP，提供更友好的显示格式
      *
-     * @param string $ip 要查询的IP地址（支持IPv4和IPv6）
+     * @param  string      $ip 要查询的IP地址（支持IPv4和IPv6）
      * @return string|null 返回格式化的地理位置字符串，查询失败返回 null
      *
      * @example
@@ -597,7 +599,9 @@ class Ip2Region
     {
         $geo = $this->memorySearch($ip);
         $arr = explode('|', str_replace(array('0|'), '|', isset($geo['region']) ? $geo['region'] : ''));
-        if (($last = array_pop($arr)) === '内网IP') $last = '';
+        if (($last = array_pop($arr)) === '内网IP') {
+            $last = '';
+        }
         return join('', $arr) . (empty($last) ? '' : "【{$last}】");
     }
 
@@ -607,7 +611,7 @@ class Ip2Region
      * 提供基础的搜索接口，返回原始的地理位置字符串
      * 与 memorySearch 方法功能相同，但返回格式更简洁
      *
-     * @param string $ip 要查询的IP地址（支持IPv4和IPv6）
+     * @param  string $ip 要查询的IP地址（支持IPv4和IPv6）
      * @return string 返回原始地理位置字符串，查询失败返回空字符串 ""
      *
      * @example
@@ -630,9 +634,9 @@ class Ip2Region
      * 提供二进制搜索接口，与 memorySearch 方法功能相同
      * 主要用于向后兼容，实际使用 memorySearch 方法
      *
-     * @param string $ip 要查询的IP地址（支持IPv4和IPv6）
-     * @return array 返回包含城市ID和地区信息的数组
-     *  格式：['city_id' => int, 'region' => string]
+     * @param  string $ip 要查询的IP地址（支持IPv4和IPv6）
+     * @return array  返回包含城市ID和地区信息的数组
+     *                格式：['city_id' => int, 'region' => string]
      *
      * @example
      * ```php
@@ -655,10 +659,10 @@ class Ip2Region
      * 使用二进制格式的IP地址进行查询，支持IPv4和IPv6
      * IPv4使用4字节，IPv6使用16字节的二进制格式
      *
-     * @param string $ipBytes 二进制格式的IP地址
-     *           - IPv4: 4字节二进制字符串
-     *           - IPv6: 16字节二进制字符串
-     * @return string 返回地理位置字符串，查询失败返回空字符串 ""
+     * @param  string     $ipBytes 二进制格式的IP地址
+     *                             - IPv4: 4字节二进制字符串
+     *                             - IPv6: 16字节二进制字符串
+     * @return string     返回地理位置字符串，查询失败返回空字符串 ""
      * @throws \Exception 当IP版本无法确定或搜索引擎创建失败时抛出异常
      *
      * @example
@@ -697,9 +701,9 @@ class Ip2Region
      * 提供B树搜索接口，与 memorySearch 方法功能相同
      * 主要用于向后兼容，实际使用 memorySearch 方法
      *
-     * @param string $ip 要查询的IP地址（支持IPv4和IPv6）
-     * @return array 返回包含城市ID和地区信息的数组
-     *  格式：['city_id' => int, 'region' => string]
+     * @param  string $ip 要查询的IP地址（支持IPv4和IPv6）
+     * @return array  返回包含城市ID和地区信息的数组
+     *                格式：['city_id' => int, 'region' => string]
      *
      * @example
      * ```php
@@ -722,7 +726,7 @@ class Ip2Region
      * 检测给定IP地址的协议版本，支持IPv4和IPv6
      * 这是 getIpVersion 方法的公共版本，不会抛出异常
      *
-     * @param string $ip 要检测的IP地址
+     * @param  string $ip 要检测的IP地址
      * @return string 返回 'v4' 表示IPv4，'v6' 表示IPv6，'unknown' 表示无效IP
      *
      * @example
@@ -751,11 +755,11 @@ class Ip2Region
      * 包括IPv4和IPv6的IO次数以及总次数
      *
      * @return array 返回包含IO计数信息的数组
-     *  格式：[
-     *    'v4_io_count' => int,      // IPv4 IO操作次数
-     *    'v6_io_count' => int,      // IPv6 IO操作次数
-     *    'total_io_count' => int    // 总IO操作次数
-     *  ]
+     *               格式：[
+     *               'v4_io_count' => int,      // IPv4 IO操作次数
+     *               'v6_io_count' => int,      // IPv6 IO操作次数
+     *               'total_io_count' => int    // 总IO操作次数
+     *               ]
      *
      * @example
      * ```php
@@ -828,15 +832,15 @@ class Ip2Region
      * 包括IPv4/IPv6加载状态、缓存策略、自定义路径等
      *
      * @return array 返回包含数据库信息的数组
-     *  格式：[
-     *    'v4_loaded' => bool,        // IPv4搜索引擎是否已加载
-     *    'v6_loaded' => bool,        // IPv6搜索引擎是否已加载
-     *    'cache_policy' => string,   // 当前缓存策略
-     *    'custom_v4_path' => string, // 自定义IPv4数据库路径
-     *    'custom_v6_path' => string, // 自定义IPv6数据库路径
-     *    'v4_version' => int,        // IPv4数据库版本（如果已加载）
-     *    'v6_version' => int         // IPv6数据库版本（如果已加载）
-     *  ]
+     *               格式：[
+     *               'v4_loaded' => bool,        // IPv4搜索引擎是否已加载
+     *               'v6_loaded' => bool,        // IPv6搜索引擎是否已加载
+     *               'cache_policy' => string,   // 当前缓存策略
+     *               'custom_v4_path' => string, // 自定义IPv4数据库路径
+     *               'custom_v6_path' => string, // 自定义IPv6数据库路径
+     *               'v4_version' => int,        // IPv4数据库版本（如果已加载）
+     *               'v6_version' => int         // IPv6数据库版本（如果已加载）
+     *               ]
      *
      * @example
      * ```php
@@ -885,16 +889,16 @@ class Ip2Region
      * 用于检查自定义数据库文件的状态
      *
      * @return array 返回包含自定义数据库文件信息的数组
-     *  格式：[
-     *    'v4_path' => string,        // IPv4自定义数据库路径
-     *    'v6_path' => string,        // IPv6自定义数据库路径
-     *    'v4_exists' => bool,        // IPv4文件是否存在
-     *    'v6_exists' => bool,        // IPv6文件是否存在
-     *    'v4_size' => int,           // IPv4文件大小（字节）
-     *    'v6_size' => int,           // IPv6文件大小（字节）
-     *    'v4_modified' => int,       // IPv4文件修改时间
-     *    'v6_modified' => int        // IPv6文件修改时间
-     *  ]
+     *               格式：[
+     *               'v4_path' => string,        // IPv4自定义数据库路径
+     *               'v6_path' => string,        // IPv6自定义数据库路径
+     *               'v4_exists' => bool,        // IPv4文件是否存在
+     *               'v6_exists' => bool,        // IPv6文件是否存在
+     *               'v4_size' => int,           // IPv4文件大小（字节）
+     *               'v6_size' => int,           // IPv6文件大小（字节）
+     *               'v4_modified' => int,       // IPv4文件修改时间
+     *               'v6_modified' => int        // IPv6文件修改时间
+     *               ]
      *
      * @example
      * ```php
@@ -921,8 +925,8 @@ class Ip2Region
      * 设置IPv4和IPv6的自定义数据库文件路径
      * 设置后会自动重置已加载的搜索引擎，强制重新加载
      *
-     * @param string|null $v4Path IPv4数据库文件路径，为 null 时使用默认路径
-     * @param string|null $v6Path IPv6数据库文件路径，为 null 时使用默认路径
+     * @param  string|null $v4Path IPv4数据库文件路径，为 null 时使用默认路径
+     * @param  string|null $v6Path IPv6数据库文件路径，为 null 时使用默认路径
      * @return void
      *
      * @example
@@ -961,10 +965,10 @@ class Ip2Region
      * 包括IPv4和IPv6的自定义数据库使用状态
      *
      * @return array 返回包含使用状态的数组
-     *  格式：[
-     *    'v4' => bool,    // IPv4是否使用自定义数据库
-     *    'v6' => bool     // IPv6是否使用自定义数据库
-     *  ]
+     *               格式：[
+     *               'v4' => bool,    // IPv4是否使用自定义数据库
+     *               'v6' => bool     // IPv6是否使用自定义数据库
+     *               ]
      *
      * @example
      * ```php
@@ -982,21 +986,20 @@ class Ip2Region
         );
     }
 
-
     /**
      * 获取数据库文件信息
      *
      * 获取指定数据库文件的详细信息，包括路径、大小、修改时间等
      * 用于检查数据库文件的状态和属性
      *
-     * @param string|null $filePath 数据库文件路径
-     * @return array|null 返回包含文件信息的数组，文件不存在时返回 null
-     *      格式：[
-     *        'path' => string,      // 文件路径
-     *        'size' => int,        // 文件大小（字节）
-     *        'modified' => int,    // 修改时间（Unix时间戳）
-     *        'exists' => bool      // 文件是否存在
-     *      ]
+     * @param  string|null $filePath 数据库文件路径
+     * @return array|null  返回包含文件信息的数组，文件不存在时返回 null
+     *                     格式：[
+     *                     'path' => string,      // 文件路径
+     *                     'size' => int,        // 文件大小（字节）
+     *                     'modified' => int,    // 修改时间（Unix时间戳）
+     *                     'exists' => bool      // 文件是否存在
+     *                     ]
      *
      * @example
      * ```php
@@ -1028,8 +1031,8 @@ class Ip2Region
      * 检查指定的自定义数据库文件是否存在且可读
      * 用于验证自定义数据库路径的有效性
      *
-     * @param string|null $filePath 数据库文件路径
-     * @return bool 返回 true 表示文件存在且可读，false 表示不存在或不可读
+     * @param  string|null $filePath 数据库文件路径
+     * @return bool        返回 true 表示文件存在且可读，false 表示不存在或不可读
      *
      * @example
      * ```php

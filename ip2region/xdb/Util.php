@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * XDB 工具类
  *
@@ -69,7 +71,7 @@ class Util
      * 将字符串格式的IP地址转换为二进制字节格式（打包字节）
      * 支持IPv4和IPv6地址的解析
      *
-     * @param string $ipString 要解析的IP地址字符串
+     * @param  string      $ipString 要解析的IP地址字符串
      * @return string|null 成功返回打包的二进制字节，失败返回 null
      *
      * @example
@@ -99,8 +101,8 @@ class Util
      *
      * 验证给定的字符串是否为有效的IPv4地址
      *
-     * @param string $ipString 要检查的IP地址字符串
-     * @return bool 返回 true 表示是有效的IPv4地址，false 表示不是
+     * @param  string $ipString 要检查的IP地址字符串
+     * @return bool   返回 true 表示是有效的IPv4地址，false 表示不是
      *
      * @example
      * ```php
@@ -119,8 +121,8 @@ class Util
      *
      * 验证给定的字符串是否为有效的IPv6地址
      *
-     * @param string $ipString 要检查的IP地址字符串
-     * @return bool 返回 true 表示是有效的IPv6地址，false 表示不是
+     * @param  string $ipString 要检查的IP地址字符串
+     * @return bool   返回 true 表示是有效的IPv6地址，false 表示不是
      *
      * @example
      * ```php
@@ -139,8 +141,8 @@ class Util
      *
      * 根据IP地址字符串返回对应的版本号
      *
-     * @param string $ipString 要检查的IP地址字符串
-     * @return int 返回版本号：4表示IPv4，6表示IPv6，0表示无效IP
+     * @param  string $ipString 要检查的IP地址字符串
+     * @return int    返回版本号：4表示IPv4，6表示IPv6，0表示无效IP
      *
      * @example
      * ```php
@@ -153,7 +155,7 @@ class Util
     {
         if (self::isIPv4($ipString)) {
             return self::IPv4VersionNo;
-        } else if (self::isIPv6($ipString)) {
+        } elseif (self::isIPv6($ipString)) {
             return self::IPv6VersionNo;
         }
         return 0;
@@ -168,9 +170,9 @@ class Util
      *
      * 从指定偏移量开始读取4个字节，按大端序转换为32位长整型
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @return int 返回转换后的长整型值
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @return int    返回转换后的长整型值
      *
      * @example
      * ```php
@@ -192,9 +194,9 @@ class Util
      *
      * 从指定偏移量开始读取2个字节，按大端序转换为16位整型
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @return int 返回转换后的整型值
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @return int    返回转换后的整型值
      *
      * @example
      * ```php
@@ -214,9 +216,9 @@ class Util
      *
      * 从指定偏移量开始读取2个字节，按小端序转换为16位整型
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @return int 返回转换后的整型值
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @return int    返回转换后的整型值
      *
      * @example
      * ```php
@@ -236,9 +238,9 @@ class Util
      *
      * 从指定偏移量开始读取4个字节，按小端序转换为32位长整型
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @return int 返回转换后的长整型值
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @return int    返回转换后的长整型值
      *
      * @example
      * ```php
@@ -261,9 +263,9 @@ class Util
      * 从指定偏移量开始读取2个字节，按大端序转换为16位整型
      * 与 getInt 方法功能相同，提供更明确的命名
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @return int 返回转换后的整型值
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @return int    返回转换后的整型值
      *
      * @example
      * ```php
@@ -284,9 +286,9 @@ class Util
      * 从指定偏移量开始读取4个字节，按大端序转换为32位长整型
      * 与 getLong 方法功能相同，提供更明确的命名
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @return int 返回转换后的长整型值
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @return int    返回转换后的长整型值
      *
      * @example
      * ```php
@@ -312,9 +314,9 @@ class Util
      *
      * 从指定偏移量开始提取指定长度的字节并转换为字符串
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的字节长度
      * @return string 返回转换后的字符串
      *
      * @example
@@ -334,9 +336,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为字符串
      * 自动截断到第一个空字符（\0）处
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的字符串（已截断到空字符）
      *
      * @example
@@ -361,9 +363,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为UTF-8字符串
      * 自动截断到第一个空字符（\0）处
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串
      *
      * @example
@@ -388,9 +390,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为GBK字符串
      * 自动截断到第一个空字符（\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从GBK转换）
      *
      * @example
@@ -415,9 +417,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为GB2312字符串
      * 自动截断到第一个空字符（\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从GB2312转换）
      *
      * @example
@@ -442,9 +444,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为Big5字符串
      * 自动截断到第一个空字符（\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从Big5转换）
      *
      * @example
@@ -469,9 +471,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为ISO-8859-1字符串
      * 自动截断到第一个空字符（\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从ISO-8859-1转换）
      *
      * @example
@@ -496,9 +498,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为Windows-1252字符串
      * 自动截断到第一个空字符（\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从Windows-1252转换）
      *
      * @example
@@ -523,9 +525,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为ASCII字符串
      * 自动截断到第一个空字符（\0）处
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的ASCII字符串
      *
      * @example
@@ -550,9 +552,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为Latin1字符串
      * 自动截断到第一个空字符（\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从Latin1转换）
      *
      * @example
@@ -577,9 +579,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为UTF-16字符串
      * 自动截断到第一个双空字符（\0\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从UTF-16转换）
      *
      * @example
@@ -604,9 +606,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为UTF-16LE字符串
      * 自动截断到第一个双空字符（\0\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从UTF-16LE转换）
      *
      * @example
@@ -631,9 +633,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为UTF-16BE字符串
      * 自动截断到第一个双空字符（\0\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从UTF-16BE转换）
      *
      * @example
@@ -658,9 +660,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为UTF-32字符串
      * 自动截断到第一个四空字符（\0\0\0\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从UTF-32转换）
      *
      * @example
@@ -685,9 +687,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为UTF-32LE字符串
      * 自动截断到第一个四空字符（\0\0\0\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从UTF-32LE转换）
      *
      * @example
@@ -712,9 +714,9 @@ class Util
      * 从指定偏移量开始提取指定长度的字节并转换为UTF-32BE字符串
      * 自动截断到第一个四空字符（\0\0\0\0）处，并转换为UTF-8编码
      *
-     * @param string $bytes 字节数组
-     * @param int $offset 起始偏移量
-     * @param int $length 要提取的最大字节长度
+     * @param  string $bytes  字节数组
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要提取的最大字节长度
      * @return string 返回转换后的UTF-8字符串（从UTF-32BE转换）
      *
      * @example
@@ -743,8 +745,8 @@ class Util
      * 从指定索引开始读取4个字节，按小端序转换为32位无符号整数
      * 在32位操作系统上自动将有符号整数转换为无符号整数
      *
-     * @param string $b 字节缓冲区
-     * @param int $idx 起始索引
+     * @param  string     $b   字节缓冲区
+     * @param  int        $idx 起始索引
      * @return int|string 返回转换后的无符号整数
      *
      * @example
@@ -771,9 +773,9 @@ class Util
      *
      * 从指定索引开始读取2个字节，按小端序转换为16位无符号整数
      *
-     * @param string $b 字节缓冲区
-     * @param int $idx 起始索引
-     * @return int 返回转换后的无符号整数
+     * @param  string $b   字节缓冲区
+     * @param  int    $idx 起始索引
+     * @return int    返回转换后的无符号整数
      *
      * @example
      * ```php
@@ -796,10 +798,10 @@ class Util
      * 将IP地址字节与缓冲区中指定偏移量的字节进行比较
      * 用于在二进制数据中查找匹配的IP地址
      *
-     * @param string $ip1 要比较的IP地址字节
-     * @param string $buff 字节缓冲区
-     * @param int $offset 缓冲区中的起始偏移量
-     * @return int 返回 -1 (ip1 < ip2), 0 (ip1 == ip2) 或 1 (ip1 > ip2)
+     * @param  string $ip1    要比较的IP地址字节
+     * @param  string $buff   字节缓冲区
+     * @param  int    $offset 缓冲区中的起始偏移量
+     * @return int    返回 -1 (ip1 < ip2), 0 (ip1 == ip2) 或 1 (ip1 > ip2)
      *
      * @example
      * ```php
@@ -815,7 +817,7 @@ class Util
         $r = strcmp($ip1, substr($buff, $offset, strlen($ip1)));
         if ($r < 0) {
             return -1;
-        } else if ($r > 0) {
+        } elseif ($r > 0) {
             return 1;
         } else {
             return 0;
@@ -828,9 +830,9 @@ class Util
      * 直接比较两个IP地址的字节表示
      * 用于IP地址的排序和查找
      *
-     * @param string $ip1 第一个IP地址字节
-     * @param string $ip2 第二个IP地址字节
-     * @return int 返回 -1 (ip1 < ip2), 0 (ip1 == ip2) 或 1 (ip1 > ip2)
+     * @param  string $ip1 第一个IP地址字节
+     * @param  string $ip2 第二个IP地址字节
+     * @return int    返回 -1 (ip1 < ip2), 0 (ip1 == ip2) 或 1 (ip1 > ip2)
      *
      * @example
      * ```php
@@ -844,7 +846,7 @@ class Util
         $r = strcmp($ip1, $ip2);
         if ($r < 0) {
             return -1;
-        } else if ($r > 0) {
+        } elseif ($r > 0) {
             return 1;
         } else {
             return 0;
@@ -861,7 +863,7 @@ class Util
      * 将二进制格式的IP地址转换为可读的字符串格式
      * 支持IPv4和IPv6地址
      *
-     * @param string $ipBytes 二进制格式的IP地址字节
+     * @param  string $ipBytes 二进制格式的IP地址字节
      * @return string 返回可读的IP地址字符串，无效IP返回 '<invalid-ip-bytes>'
      *
      * @example
@@ -885,8 +887,8 @@ class Util
      *
      * 根据版本名称（如 "V4", "IPv4", "V6", "IPv6"）返回对应的版本对象
      *
-     * @param string $ver_name 版本名称
-     * @return IPv4|IPv6 返回对应的版本对象
+     * @param  string     $ver_name 版本名称
+     * @return IPv4|IPv6  返回对应的版本对象
      * @throws \Exception 当版本名称无效时抛出异常
      *
      * @example
@@ -900,7 +902,7 @@ class Util
         $name = strtoupper($ver_name);
         if ($name == "V4" || $name == "IPV4") {
             return IPv4::default();
-        } else if ($name == "V6" || $name == "IPV6") {
+        } elseif ($name == "V6" || $name == "IPV6") {
             return IPv6::default();
         } else {
             throw new \Exception("invalid verstion name `{$ver_name}`");
@@ -913,8 +915,8 @@ class Util
      * 根据XDB文件头部信息返回对应的版本对象
      * 支持2.0和3.0两种结构版本
      *
-     * @param array $header 头部信息数组
-     * @return IPv4|IPv6 返回对应的版本对象
+     * @param  array      $header 头部信息数组
+     * @return IPv4|IPv6  返回对应的版本对象
      * @throws \Exception 当版本信息无效时抛出异常
      *
      * @example
@@ -937,7 +939,7 @@ class Util
 
         if ($header['ipVersion'] == self::IPv4VersionNo) {
             return IPv4::default();
-        } else if ($header['ipVersion'] == self::IPv6VersionNo) {
+        } elseif ($header['ipVersion'] == self::IPv6VersionNo) {
             return IPv6::default();
         } else {
             throw new \Exception("invalid ip version number `{$header['ipVersion']}`");
@@ -953,9 +955,9 @@ class Util
      *
      * 将二进制字节数组转换为空格分隔的数字字符串，用于调试
      *
-     * @param string $buff 字节缓冲区
-     * @param int $offset 起始偏移量
-     * @param int $length 要转换的字节长度
+     * @param  string $buff   字节缓冲区
+     * @param  int    $offset 起始偏移量
+     * @param  int    $length 要转换的字节长度
      * @return string 返回格式化的字符串表示
      *
      * @example
@@ -986,7 +988,7 @@ class Util
      * @Note 注意：只需在服务启动时检查一次
      * 或使用另一个进程（如命令）检查一次以确认适用性
      *
-     * @param resource $handle 文件句柄
+     * @param  resource    $handle 文件句柄
      * @return string|null 一切正常返回 null，否则返回错误字符串
      *
      * @example
@@ -1011,7 +1013,7 @@ class Util
         $runtimePtrBytes = 0;
         if ($header['version'] == self::Structure_20) {
             $runtimePtrBytes = 4;
-        } else if ($header['version'] == self::Structure_30) {
+        } elseif ($header['version'] == self::Structure_30) {
             $runtimePtrBytes = $header['runtimePtrBytes'];
         } else {
             return "invalid structure version `{$header['version']}`";
@@ -1038,7 +1040,7 @@ class Util
      *
      * 打开并验证指定的XDB文件是否可用
      *
-     * @param string $dbFile XDB文件路径
+     * @param  string      $dbFile XDB文件路径
      * @return string|null 返回错误信息字符串，验证通过返回 null
      *
      * @example
@@ -1066,7 +1068,7 @@ class Util
      *
      * 从XDB文件句柄读取并解析头部信息
      *
-     * @param resource $handle 文件句柄
+     * @param  resource   $handle 文件句柄
      * @return array|null 返回头部信息数组，失败返回 null
      *
      * @example
@@ -1110,7 +1112,7 @@ class Util
      *
      * 打开XDB文件并读取头部信息
      *
-     * @param string $dbFile XDB文件路径
+     * @param  string     $dbFile XDB文件路径
      * @return array|null 返回头部信息数组，失败返回 null
      *
      * @example
@@ -1136,7 +1138,7 @@ class Util
      *
      * 从XDB文件句柄读取向量索引数据
      *
-     * @param resource $handle 文件句柄
+     * @param  resource    $handle 文件句柄
      * @return string|null 返回向量索引二进制数据，失败返回 null
      *
      * @example
@@ -1170,7 +1172,7 @@ class Util
      *
      * 打开XDB文件并读取向量索引数据
      *
-     * @param string $dbFile XDB文件路径
+     * @param  string      $dbFile XDB文件路径
      * @return string|null 返回向量索引二进制数据，失败返回 null
      *
      * @example
@@ -1196,7 +1198,7 @@ class Util
      *
      * 从XDB文件句柄读取整个文件内容到内存
      *
-     * @param resource $handle 文件句柄
+     * @param  resource    $handle 文件句柄
      * @return string|null 返回文件内容，失败返回 null
      *
      * @example
@@ -1240,7 +1242,7 @@ class Util
      *
      * 读取整个XDB文件内容到内存
      *
-     * @param string $dbFile XDB文件路径
+     * @param  string      $dbFile XDB文件路径
      * @return string|null 返回文件内容，失败返回 null
      *
      * @example

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * XDB 搜索引擎
  *
@@ -62,9 +64,9 @@ class Searcher
      * 使用文件句柄进行数据读取，适合大文件处理
      * 内部会将 int 版本参数转换为对应的版本对象
      *
-     * @param int $version IP版本（4或6）
-     * @param string $dbFile XDB数据库文件路径
-     * @return Searcher 返回搜索引擎实例
+     * @param  int        $version IP版本（4或6）
+     * @param  string     $dbFile  XDB数据库文件路径
+     * @return Searcher   返回搜索引擎实例
      * @throws \Exception 当文件不存在或无法打开时抛出异常
      *
      * @example
@@ -86,10 +88,10 @@ class Searcher
      * 使用预加载的向量索引提高搜索性能
      * 内部会将 int 版本参数转换为对应的版本对象
      *
-     * @param int $version IP版本（4或6）
-     * @param string $dbFile XDB数据库文件路径
-     * @param string $vIndex 向量索引数据
-     * @return Searcher 返回搜索引擎实例
+     * @param  int        $version IP版本（4或6）
+     * @param  string     $dbFile  XDB数据库文件路径
+     * @param  string     $vIndex  向量索引数据
+     * @return Searcher   返回搜索引擎实例
      * @throws \Exception 当文件不存在或无法打开时抛出异常
      *
      * @example
@@ -111,8 +113,8 @@ class Searcher
      * 使用预加载的内容缓冲区，适合小文件或内存充足的环境
      * 内部会将 int 版本参数转换为对应的版本对象
      *
-     * @param int $version IP版本（4或6）
-     * @param string $cBuff 内容缓冲区数据
+     * @param  int      $version IP版本（4或6）
+     * @param  string   $cBuff   内容缓冲区数据
      * @return Searcher 返回搜索引擎实例
      *
      * @throws \Exception
@@ -138,18 +140,18 @@ class Searcher
      * 根据提供的参数初始化搜索引擎实例
      * 支持文件句柄、向量索引和内容缓冲区三种模式
      *
-     * @param IPv4|IPv6 $version IP版本对象（IPv4或IPv6）
-     * @param string|null $dbFile XDB数据库文件路径
-     * @param string|null $vectorIndex 向量索引数据
-     * @param string|null $cBuff 内容缓冲区数据
-     * @throws \Exception 当文件无法打开时抛出异常
+     * @param  IPv4|IPv6   $version     IP版本对象（IPv4或IPv6）
+     * @param  string|null $dbFile      XDB数据库文件路径
+     * @param  string|null $vectorIndex 向量索引数据
+     * @param  string|null $cBuff       内容缓冲区数据
+     * @throws \Exception  当文件无法打开时抛出异常
      *
      * @example
      * ```php
      * $searcher = new Searcher(IPv4::default(), '/path/to/ipv4.xdb');
      * ```
      */
-    function __construct($version, ?string $dbFile = null, ?string $vectorIndex = null, ?string $cBuff = null)
+    public function __construct($version, ?string $dbFile = null, ?string $vectorIndex = null, ?string $cBuff = null)
     {
         $this->version = $version;
 
@@ -177,8 +179,8 @@ class Searcher
      * @Note 重要提示：IP地址必须是人类可读的IP地址字符串
      * 不要使用 parseIP 返回的打包二进制字符串
      *
-     * @param string $ip IP地址字符串（人类可读格式，如 "61.142.118.231"）
-     * @return string 返回地区信息字符串，未找到返回空字符串
+     * @param  string     $ip IP地址字符串（人类可读格式，如 "61.142.118.231"）
+     * @return string     返回地区信息字符串，未找到返回空字符串
      * @throws \Exception 当IP地址无效或搜索过程中发生错误时抛出异常
      *
      * @example
@@ -204,8 +206,8 @@ class Searcher
      * 使用 parseIP 返回的二进制格式IP地址进行搜索
      * 这是 search 方法的底层实现，避免重复解析，提供更高的性能
      *
-     * @param string $ipBytes 二进制格式的IP地址字节（由 parseIP 或 inet_pton 返回）
-     * @return string 返回地区信息字符串，未找到返回空字符串
+     * @param  string     $ipBytes 二进制格式的IP地址字节（由 parseIP 或 inet_pton 返回）
+     * @return string     返回地区信息字符串，未找到返回空字符串
      * @throws \Exception 当IP版本不匹配或搜索过程中发生错误时抛出异常
      *
      * @example
@@ -233,7 +235,7 @@ class Searcher
         if ($this->vectorIndex != null) {
             $sPtr = Util::le_getUint32($this->vectorIndex, $idx);
             $ePtr = Util::le_getUint32($this->vectorIndex, $idx + 4);
-        } else if ($this->contentBuff != null) {
+        } elseif ($this->contentBuff != null) {
             $sPtr = Util::le_getUint32($this->contentBuff, Util::HeaderInfoLength + $idx);
             $ePtr = Util::le_getUint32($this->contentBuff, Util::HeaderInfoLength + $idx + 4);
         } else {
@@ -259,7 +261,7 @@ class Searcher
             // compare the segment index
             if ($this->version->ipSubCompare($ipBytes, $buff, 0) < 0) {
                 $h = $m - 1;
-            } else if ($this->version->ipSubCompare($ipBytes, $buff, $bytes) > 0) {
+            } elseif ($this->version->ipSubCompare($ipBytes, $buff, $bytes) > 0) {
                 $l = $m + 1;
             } else {
                 $dataLen = Util::le_getUint16($buff, $dBytes);
@@ -288,9 +290,9 @@ class Searcher
      * 根据当前模式（文件句柄或内容缓冲区）读取数据
      * 优先检查内存缓冲区，提高读取性能
      *
-     * @param int $offset 起始偏移量（索引位置）
-     * @param int $len 要读取的字节长度
-     * @return string 返回读取的数据
+     * @param  int        $offset 起始偏移量（索引位置）
+     * @param  int        $len    要读取的字节长度
+     * @return string     返回读取的数据
      * @throws \Exception 当读取失败时抛出异常
      *
      * @example
@@ -365,7 +367,6 @@ class Searcher
     {
         return $this->version;
     }
-
 
     /**
      * 关闭搜索引擎

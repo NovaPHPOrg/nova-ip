@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * ip2region 全局函数库
  *
@@ -34,10 +36,10 @@ if (!function_exists('ip2region')) {
      * - `binary`: 使用二进制搜索算法，返回数组格式
      * - `btree`: 使用 B 树索引算法，返回数组格式
      *
-     * @param string $ip IP 地址，支持 IPv4 和 IPv6 格式
-     * @param string $method 查询方法，可选值：simple, search, memory, binary, btree
+     * @param  string            $ip     IP 地址，支持 IPv4 和 IPv6 格式
+     * @param  string            $method 查询方法，可选值：simple, search, memory, binary, btree
      * @return string|array|null 查询结果，失败时返回 null
-     * @throws Exception 当 IP 地址格式无效时抛出异常
+     * @throws Exception         当 IP 地址格式无效时抛出异常
      *
      * @example
      * // IPv4 查询示例

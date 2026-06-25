@@ -44,11 +44,10 @@ declare(strict_types=1);
 namespace nova\plugin\ip;
 
 use Exception;
-
-use function nova\framework\dump;
-
+use nova\framework\core\Instance;
 use nova\plugin\ip\ip2region\xdb\Searcher;
 use ReflectionClass;
+use RuntimeException;
 
 /**
  * ip2region 主类
@@ -56,7 +55,7 @@ use ReflectionClass;
  * 提供统一的IP地址查询接口，支持IPv4和IPv6
  * 自动处理数据库加载和查询优化
  */
-class Ip2Region
+class Ip2Region extends Instance
 {
     private $searcherV4 = null;
     private $searcherV6 = null;
@@ -124,7 +123,7 @@ class Ip2Region
      *
      * @param  string     $ip 要检测的IP地址
      * @return string     返回 'v4' 表示IPv4，'v6' 表示IPv6
-     * @throws \Exception 当IP地址格式无效时抛出异常
+     * @throws Exception 当IP地址格式无效时抛出异常
      *
      * @example
      * ```php
@@ -140,7 +139,7 @@ class Ip2Region
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             return 'v6';
         } else {
-            throw new \Exception("无效的IP地址: {$ip}");
+            throw new Exception("无效的IP地址: {$ip}");
         }
     }
 
@@ -152,7 +151,7 @@ class Ip2Region
      *
      * @param  string     $ip 要查询的IP地址
      * @return Searcher   返回对应版本的搜索引擎实例
-     * @throws \Exception 当IP地址无效或搜索引擎创建失败时抛出异常
+     * @throws Exception 当IP地址无效或搜索引擎创建失败时抛出异常
      *
      * @example
      * ```php
@@ -189,7 +188,7 @@ class Ip2Region
      *
      * @param  string     $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
      * @return string     返回可用的数据库文件路径
-     * @throws \Exception 当找不到可用的数据库文件时抛出异常
+     * @throws Exception 当找不到可用的数据库文件时抛出异常
      *
      * @example
      * ```php
@@ -246,9 +245,9 @@ class Ip2Region
 
         // 4. 抛出异常，提示用户下载数据库
         if ($version === 'v6') {
-            throw new \Exception("IPv6 查询需要下载完整数据库文件。\n\n下载方式：\n1. 使用 Composer 命令：composer download-db:v6\n2. 使用下载工具：./vendor/bin/ip2down download v6\n3. 手动下载（代理优先）：https://gh-proxy.org/https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v6.xdb\n   备用直链：https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v6.xdb");
+            throw new Exception("IPv6 查询需要下载完整数据库文件。\n\n下载方式：\n1. 使用 Composer 命令：composer download-db:v6\n2. 使用下载工具：./vendor/bin/ip2down download v6\n3. 手动下载（代理优先）：https://gh-proxy.org/https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v6.xdb\n   备用直链：https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region_v6.xdb");
         } else {
-            throw new \Exception("未找到 IPv4 数据库文件。\n\n解决方案：\n1. 使用 Composer 命令：composer download-db:v4\n2. 使用下载工具：./vendor/bin/ip2down download v4\n3. 确保数据库文件 ip2region_v4.xdb 存在于 db/ 目录中");
+            throw new Exception("未找到 IPv4 数据库文件。\n\n解决方案：\n1. 使用 Composer 命令：composer download-db:v4\n2. 使用下载工具：./vendor/bin/ip2down download v4\n3. 确保数据库文件 ip2region_v4.xdb 存在于 db/ 目录中");
         }
     }
 
@@ -259,7 +258,7 @@ class Ip2Region
      *
      * @param  string     $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
      * @return Searcher   返回搜索引擎实例
-     * @throws \Exception 当数据库文件不存在或搜索引擎创建失败时抛出异常
+     * @throws Exception 当数据库文件不存在或搜索引擎创建失败时抛出异常
      *
      * @example
      * ```php
@@ -281,7 +280,7 @@ class Ip2Region
             }
 
             if (!file_exists($file)) {
-                throw new \Exception("数据库文件不存在: {$file}");
+                throw new Exception("数据库文件不存在: {$file}");
             }
 
             // 根据缓存策略创建搜索引擎
@@ -298,7 +297,7 @@ class Ip2Region
                 default:
                     return Searcher::newWithFileOnly($ipVersion, $file);
             }
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             // 如果是数据库文件相关的错误，直接传递原始错误信息
             if (
                 strpos($e->getMessage(), 'IPv6 查询需要下载') !== false ||
@@ -306,7 +305,7 @@ class Ip2Region
             ) {
                 throw $e;
             }
-            throw new \Exception("创建 {$version} 查询器失败: " . $e->getMessage());
+            throw new Exception("创建 {$version} 查询器失败: " . $e->getMessage());
         }
     }
 
@@ -319,7 +318,7 @@ class Ip2Region
      * @param  string     $ip 要查询的IP地址（支持IPv4和IPv6）
      * @return array      返回包含城市ID和地区信息的数组
      *                    格式：['city_id' => int, 'region' => string]
-     * @throws \Exception 当IP地址无效或查询失败时抛出异常
+     * @throws Exception 当IP地址无效或查询失败时抛出异常
      *
      * @example
      * ```php
@@ -380,7 +379,7 @@ class Ip2Region
      *
      * @param  string     $ip 要查询的IPv6地址
      * @return string     返回地理位置字符串，查询失败返回空字符串 ""
-     * @throws \Exception 当不是有效的IPv6地址时抛出异常
+     * @throws Exception 当不是有效的IPv6地址时抛出异常
      *
      * @example
      * ```php
@@ -392,7 +391,7 @@ class Ip2Region
     public function searchIPv6(string $ip): string
     {
         if (!$this->isIPv6($ip)) {
-            throw new \Exception("不是有效的IPv6地址: {$ip}");
+            throw new Exception("不是有效的IPv6地址: {$ip}");
         }
         $result = $this->memorySearch($ip);
         return isset($result['region']) ? $result['region'] : '';
@@ -663,7 +662,7 @@ class Ip2Region
      *                             - IPv4: 4字节二进制字符串
      *                             - IPv6: 16字节二进制字符串
      * @return string     返回地理位置字符串，查询失败返回空字符串 ""
-     * @throws \Exception 当IP版本无法确定或搜索引擎创建失败时抛出异常
+     * @throws Exception 当IP版本无法确定或搜索引擎创建失败时抛出异常
      *
      * @example
      * ```php
@@ -862,13 +861,13 @@ class Ip2Region
         // 获取实际使用的数据库文件路径
         try {
             $info['v4_path'] = $this->getDbFile('v4');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $info['v4_path'] = null;
         }
 
         try {
             $info['v6_path'] = $this->getDbFile('v6');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $info['v6_path'] = null;
         }
 

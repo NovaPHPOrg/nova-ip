@@ -98,7 +98,7 @@ abstract class AbstractOnlineIpProvider extends Instance implements OnlineIpProv
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>      $data
      * @return array<string, mixed>|null
      */
     protected function normalizePayload(array $data): ?array

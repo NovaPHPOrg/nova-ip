@@ -35,9 +35,9 @@ class IpAPI extends AbstractOnlineIpProvider
         }
 
         return $this->baseUrl() . '/json/' . rawurlencode($ip) . '?' . http_build_query([
-                'fields' => (string)self::FIELDS,
-                'lang' => $lang,
-            ]);
+            'fields' => (string)self::FIELDS,
+            'lang' => $lang,
+        ]);
     }
 
     protected function baseUrl(): string

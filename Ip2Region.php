@@ -121,8 +121,8 @@ class Ip2Region extends Instance
      *
      * 检测给定的IP地址是IPv4还是IPv6格式
      *
-     * @param  string     $ip 要检测的IP地址
-     * @return string     返回 'v4' 表示IPv4，'v6' 表示IPv6
+     * @param  string    $ip 要检测的IP地址
+     * @return string    返回 'v4' 表示IPv4，'v6' 表示IPv6
      * @throws Exception 当IP地址格式无效时抛出异常
      *
      * @example
@@ -149,8 +149,8 @@ class Ip2Region extends Instance
      * 根据IP版本自动创建或返回对应的搜索引擎实例
      * 采用懒加载模式，只有在实际查询时才创建搜索引擎
      *
-     * @param  string     $ip 要查询的IP地址
-     * @return Searcher   返回对应版本的搜索引擎实例
+     * @param  string    $ip 要查询的IP地址
+     * @return Searcher  返回对应版本的搜索引擎实例
      * @throws Exception 当IP地址无效或搜索引擎创建失败时抛出异常
      *
      * @example
@@ -186,8 +186,8 @@ class Ip2Region extends Instance
      * 2. vendor 目录：下载的数据库文件（vendor/bin/ip2data/ 目录）
      * 3. 默认路径：内置数据库文件（db/ 目录）
      *
-     * @param  string     $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
-     * @return string     返回可用的数据库文件路径
+     * @param  string    $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
+     * @return string    返回可用的数据库文件路径
      * @throws Exception 当找不到可用的数据库文件时抛出异常
      *
      * @example
@@ -256,8 +256,8 @@ class Ip2Region extends Instance
      *
      * 根据指定版本创建对应的搜索引擎实例，支持IPv4和IPv6
      *
-     * @param  string     $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
-     * @return Searcher   返回搜索引擎实例
+     * @param  string    $version 版本标识，'v4' 表示IPv4，'v6' 表示IPv6
+     * @return Searcher  返回搜索引擎实例
      * @throws Exception 当数据库文件不存在或搜索引擎创建失败时抛出异常
      *
      * @example
@@ -315,9 +315,9 @@ class Ip2Region extends Instance
      * 使用内存模式查询IP地址的地理位置信息
      * 这是最常用的查询方法，返回标准格式的结果
      *
-     * @param  string     $ip 要查询的IP地址（支持IPv4和IPv6）
-     * @return array      返回包含城市ID和地区信息的数组
-     *                    格式：['city_id' => int, 'region' => string]
+     * @param  string    $ip 要查询的IP地址（支持IPv4和IPv6）
+     * @return array     返回包含城市ID和地区信息的数组
+     *                   格式：['city_id' => int, 'region' => string]
      * @throws Exception 当IP地址无效或查询失败时抛出异常
      *
      * @example
@@ -377,8 +377,8 @@ class Ip2Region extends Instance
      * 专门用于查询IPv6地址的地理位置信息
      * 包含IPv6地址格式验证，确保只处理有效的IPv6地址
      *
-     * @param  string     $ip 要查询的IPv6地址
-     * @return string     返回地理位置字符串，查询失败返回空字符串 ""
+     * @param  string    $ip 要查询的IPv6地址
+     * @return string    返回地理位置字符串，查询失败返回空字符串 ""
      * @throws Exception 当不是有效的IPv6地址时抛出异常
      *
      * @example
@@ -658,10 +658,10 @@ class Ip2Region extends Instance
      * 使用二进制格式的IP地址进行查询，支持IPv4和IPv6
      * IPv4使用4字节，IPv6使用16字节的二进制格式
      *
-     * @param  string     $ipBytes 二进制格式的IP地址
-     *                             - IPv4: 4字节二进制字符串
-     *                             - IPv6: 16字节二进制字符串
-     * @return string     返回地理位置字符串，查询失败返回空字符串 ""
+     * @param  string    $ipBytes 二进制格式的IP地址
+     *                            - IPv4: 4字节二进制字符串
+     *                            - IPv6: 16字节二进制字符串
+     * @return string    返回地理位置字符串，查询失败返回空字符串 ""
      * @throws Exception 当IP版本无法确定或搜索引擎创建失败时抛出异常
      *
      * @example

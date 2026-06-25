@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace nova\plugin\ip\online;
 
+use function nova\framework\config;
+
 use nova\plugin\http\HttpClient;
 use nova\plugin\ip\IpModel;
-use function nova\framework\config;
 
 /**
  * UAPI 网络 IP 查询（uapis.cn）。

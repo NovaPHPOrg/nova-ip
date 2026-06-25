@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace nova\plugin\ip\online;
 
-use nova\plugin\ip\IpModel;
 use function nova\framework\config;
+
+use nova\plugin\ip\IpModel;
 
 /**
  * IPinfo Lite（免费、不限次数的国家/ASN 数据）。
@@ -36,8 +37,8 @@ class IpinfoLite extends AbstractOnlineIpProvider
         }
 
         return $this->baseUrl() . '/lite/' . rawurlencode($ip) . '?' . http_build_query([
-                'token' => $token,
-            ]);
+            'token' => $token,
+        ]);
     }
 
     protected function baseUrl(): string

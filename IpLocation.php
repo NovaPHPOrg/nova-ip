@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace nova\plugin\ip;
 
+use function nova\framework\config;
+
 use nova\framework\core\Instance;
 use nova\plugin\ip\online\OnlineIpFetcher;
-use function nova\framework\config;
 
 /**
  * IP 定位入口：默认本地 ip2region，可选叠加在线 API 补充 org/as 等。

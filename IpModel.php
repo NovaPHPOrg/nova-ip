@@ -53,8 +53,8 @@ class IpModel extends ArgObject
     private static function buildLocation(string ...$parts): string
     {
         $parts = array_values(array_filter(
-            array_map(static fn(string $part): string => trim($part), $parts),
-            static fn(string $part): bool => $part !== '' && $part !== '0',
+            array_map(static fn (string $part): string => trim($part), $parts),
+            static fn (string $part): bool => $part !== '' && $part !== '0',
         ));
 
         return implode(self::LOCATION_GLUE, $parts);
@@ -257,7 +257,7 @@ class IpModel extends ArgObject
         }
 
         return implode(self::MERGE_GLUE, array_map(
-            static fn(array $entry): string => $entry['text'],
+            static fn (array $entry): string => $entry['text'],
             $picked,
         ));
     }
@@ -373,7 +373,7 @@ class IpModel extends ArgObject
     {
         $parts = array_values(array_filter(
             [$this->location, $this->isp, $this->org, $this->as],
-            static fn(string $v): bool => $v !== '',
+            static fn (string $v): bool => $v !== '',
         ));
 
         return implode('|', $parts);

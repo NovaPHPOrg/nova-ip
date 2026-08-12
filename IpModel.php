@@ -55,6 +55,9 @@ class IpModel extends ArgObject
                 (string)($info['province'] ?? $info['region'] ?? ''),
                 (string)($info['city'] ?? ''),
             ),
+            'country' => trim((string)($info['country'] ?? '')),
+            'region' => trim((string)($info['province'] ?? $info['region'] ?? '')),
+            'city' => trim((string)($info['city'] ?? '')),
             'isp' => (string)($info['isp'] ?? ''),
         ]);
     }

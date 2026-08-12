@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace nova\plugin\ip;
 
-use function nova\framework\config;
-
 use nova\framework\core\Instance;
-use nova\plugin\ip\online\OnlineIpFetcher;
+use nova\plugin\ip\online\IpAPI;
 
 /**
- * IP 定位入口：默认本地 ip2region，可选叠加在线 API 补充 org/as 等。
+ * IP 定位入口：默认本地 ip2region；混合模式合并 ip-api.com 与本地库（在线在前、本地兜底）。
  */
 final class IpLocation extends Instance
 {
     /**
-     * @param bool $multiSource true 时合并在线 API 与本地库（在线在前，本地最后兜底）
+     * @param bool $multiSource true 时混合 ip-api.com + ip2region
      */
     public function fromIp(string $ip, bool $multiSource = false): ?IpModel
     {
@@ -29,10 +27,10 @@ final class IpLocation extends Instance
             return $local;
         }
 
-        $commercial = (bool)(config('uapi.commercial') ?? false);
-        [$ipApi, $ipinfo, $xxapi, $uapi] = OnlineIpFetcher::getInstance()->fetchOrdered($ip, $commercial);
+        $online = IpAPI::getInstance()->fromIp($ip);
+        $merged = IpModel::merge($online, $local);
 
-        return IpModel::merge($ipApi, $ipinfo, $xxapi, $uapi, $local);
+        return $merged ?? $online ?? $local;
     }
 
     private function fromLocalDb(string $ip): ?IpModel

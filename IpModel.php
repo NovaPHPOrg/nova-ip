@@ -61,7 +61,7 @@ class IpModel extends ArgObject
     }
 
     /**
-     * ip-api.com 等在线接口 JSON
+     * ip-api.com 在线接口 JSON
      *
      * @param array<string, mixed> $payload
      */
@@ -80,114 +80,7 @@ class IpModel extends ArgObject
     }
 
     /**
-     * uapis.cn /api/v1/network/ipinfo
-     *
-     * @param array<string, mixed> $payload
-     */
-    public static function fromUapi(array $payload): self
-    {
-        $country = trim((string)($payload['country'] ?? ''));
-        $region = trim((string)($payload['province'] ?? $payload['state'] ?? ''));
-        $city = trim((string)($payload['city'] ?? ''));
-
-        if ($country === '' && isset($payload['region']) && is_string($payload['region'])) {
-            $parts = preg_split('/\s+/u', trim($payload['region']), 3) ?: [];
-            $country = trim((string)($parts[0] ?? ''));
-            if ($region === '') {
-                $region = trim((string)($parts[1] ?? ''));
-            }
-            if ($city === '') {
-                $city = trim((string)($parts[2] ?? ''));
-            }
-        }
-
-        return new self([
-            'location' => self::buildLocation($country, $region, $city),
-            'isp' => (string)($payload['isp'] ?? ''),
-            'org' => (string)($payload['llc'] ?? $payload['org'] ?? ''),
-            'as' => (string)($payload['asn'] ?? $payload['as'] ?? ''),
-        ]);
-    }
-
-    /**
-     * v2.xxapi.cn /api/ip（data.address 如「中国浙江温州 电信」）
-     *
-     * @param array<string, mixed> $payload
-     */
-    public static function fromXxapi(array $payload): self
-    {
-        $data = $payload['data'] ?? $payload;
-        if (!is_array($data)) {
-            return new self();
-        }
-
-        $address = trim((string)($data['address'] ?? ''));
-        if ($address === '') {
-            return new self();
-        }
-
-        return new self(self::parseXxapiAddress($address));
-    }
-
-    /**
-     * @return array{location: string, isp: string}
-     */
-    private static function parseXxapiAddress(string $address): array
-    {
-        // 「末段为运营商」的格式仅对国内数据成立（如「中国浙江温州 电信」）；
-        // 境外地址整串作为 location，不猜运营商，避免把地名末段误当 ISP。
-        if (!str_starts_with($address, '中国')) {
-            return ['location' => $address, 'isp' => ''];
-        }
-
-        $location = $address;
-        $isp = '';
-        if (preg_match('/^(.+?)\s+(\S+)$/u', $address, $m)) {
-            $location = trim($m[1]);
-            $isp = trim($m[2]);
-        }
-
-        $region = '';
-        $city = '';
-        $rest = mb_substr($location, 2);
-        if ($rest !== '') {
-            if (preg_match('/^(.+?(?:省|自治区|特别行政区))(.+)?$/u', $rest, $m)) {
-                $region = trim($m[1]);
-                $city = trim((string)($m[2] ?? ''));
-            } elseif (preg_match('/^(.{2,3}?)(.{2,})$/u', $rest, $m)) {
-                $region = $m[1];
-                $city = $m[2];
-            } else {
-                $region = $rest;
-            }
-        }
-
-        return [
-            'location' => self::buildLocation('中国', $region, $city),
-            'isp' => $isp,
-        ];
-    }
-
-    /**
-     * IPinfo Lite（api.ipinfo.io/lite/{ip}）
-     *
-     * @param array<string, mixed> $payload
-     */
-    public static function fromIpinfo(array $payload): self
-    {
-        $asName = trim((string)($payload['as_name'] ?? ''));
-
-        // IPinfo Lite 的 country 是英文名（如 "China"），与其它中文源混排会污染 location；
-        // 该源核心价值是 ASN/org，地理交给本地库与中文在线源。
-        return new self([
-            'isp' => $asName,
-            'org' => $asName,
-            'as' => (string)($payload['asn'] ?? ''),
-        ]);
-    }
-
-    /**
-     * 合并多源结果：各字段按传入顺序用 ` / ` 拼接，去重；在线 API 在前，本地 ip2region 放最后。
+     * 合并多源结果：各字段按传入顺序用 ` / ` 拼接，去重。
      *
      * @param self|null ...$models
      */

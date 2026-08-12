@@ -61,21 +61,45 @@ class IpModel extends ArgObject
     }
 
     /**
-     * ip-api.com 在线接口 JSON
+     * ip2location.io 在线接口 JSON
      *
      * @param array<string, mixed> $payload
      */
-    public static function fromIpApi(array $payload): self
+    public static function fromIp2LocationIo(array $payload): self
     {
+        $asInfo = $payload['as_info'] ?? null;
+        $asName = trim((string)(is_array($asInfo) ? ($asInfo['as_name'] ?? '') : ''));
+        if ($asName === '') {
+            $asName = trim((string)($payload['as_name'] ?? ''));
+        }
+
+        $asLegacy = trim((string)($payload['as'] ?? ''));
+        $ispField = trim((string)($payload['isp'] ?? ''));
+        $carrier = $asName !== '' ? $asName : ($asLegacy !== '' ? $asLegacy : $ispField);
+
+        $asn = trim((string)($payload['asn'] ?? ''));
+        if ($asn === '' && is_array($asInfo)) {
+            $asn = trim((string)($asInfo['as_number'] ?? ''));
+        }
+
+        $as = '';
+        if ($asn !== '' && $carrier !== '') {
+            $as = 'AS' . $asn . ' ' . $carrier;
+        } elseif ($carrier !== '') {
+            $as = $carrier;
+        } elseif ($asn !== '') {
+            $as = 'AS' . $asn;
+        }
+
         return new self([
             'location' => self::buildLocation(
-                (string)($payload['country'] ?? ''),
-                (string)($payload['regionName'] ?? $payload['region'] ?? ''),
-                (string)($payload['city'] ?? ''),
+                (string)($payload['country_name'] ?? ''),
+                (string)($payload['region_name'] ?? ''),
+                (string)($payload['city_name'] ?? ''),
             ),
-            'isp' => (string)($payload['isp'] ?? ''),
-            'org' => (string)($payload['org'] ?? ''),
-            'as' => (string)($payload['as'] ?? ''),
+            'isp' => $carrier,
+            'org' => $carrier,
+            'as' => $as,
         ]);
     }
 

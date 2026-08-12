@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace nova\plugin\ip;
 
 use nova\framework\core\Instance;
-use nova\plugin\ip\online\IpAPI;
+use nova\plugin\ip\online\Ip2LocationIo;
 
 /**
- * IP 定位入口：默认本地 ip2region；混合模式合并 ip-api.com 与本地库（在线在前、本地兜底）。
+ * IP 定位入口：默认本地 ip2region；混合模式合并 ip2location.io 与本地库（在线在前、本地兜底）。
  */
 final class IpLocation extends Instance
 {
     /**
-     * @param bool $multiSource true 时混合 ip-api.com + ip2region
+     * @param bool $multiSource true 时混合 ip2location.io + ip2region
      */
     public function fromIp(string $ip, bool $multiSource = false): ?IpModel
     {
@@ -27,7 +27,7 @@ final class IpLocation extends Instance
             return $local;
         }
 
-        $online = IpAPI::getInstance()->fromIp($ip);
+        $online = Ip2LocationIo::getInstance()->fromIp($ip);
         $merged = IpModel::merge($online, $local);
 
         return $merged ?? $online ?? $local;

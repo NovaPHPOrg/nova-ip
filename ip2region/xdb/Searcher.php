@@ -30,6 +30,8 @@ declare(strict_types=1);
 
 namespace nova\plugin\ip\ip2region\xdb;
 
+use Exception;
+
 /**
  * XDB 搜索引擎
  *
@@ -67,7 +69,7 @@ class Searcher
      * @param  int        $version IP版本（4或6）
      * @param  string     $dbFile  XDB数据库文件路径
      * @return Searcher   返回搜索引擎实例
-     * @throws \Exception 当文件不存在或无法打开时抛出异常
+     * @throws Exception 当文件不存在或无法打开时抛出异常
      *
      * @example
      * ```php
@@ -92,7 +94,7 @@ class Searcher
      * @param  string     $dbFile  XDB数据库文件路径
      * @param  string     $vIndex  向量索引数据
      * @return Searcher   返回搜索引擎实例
-     * @throws \Exception 当文件不存在或无法打开时抛出异常
+     * @throws Exception 当文件不存在或无法打开时抛出异常
      *
      * @example
      * ```php
@@ -117,7 +119,7 @@ class Searcher
      * @param  string   $cBuff   内容缓冲区数据
      * @return Searcher 返回搜索引擎实例
      *
-     * @throws \Exception
+     * @throws Exception
      * @example
      * ```php
      * $searcher = Searcher::newWithBuffer(4, $contentBuffer);
@@ -144,7 +146,7 @@ class Searcher
      * @param  string|null $dbFile      XDB数据库文件路径
      * @param  string|null $vectorIndex 向量索引数据
      * @param  string|null $cBuff       内容缓冲区数据
-     * @throws \Exception  当文件无法打开时抛出异常
+     * @throws Exception  当文件无法打开时抛出异常
      *
      * @example
      * ```php
@@ -163,7 +165,7 @@ class Searcher
             // open the xdb binary file
             $this->handle = fopen($dbFile, "r");
             if ($this->handle === false) {
-                throw new \Exception("failed to open xdb file '%s'", $dbFile);
+                throw new Exception("failed to open xdb file '%s'", $dbFile);
             }
 
             $this->vectorIndex = $vectorIndex;
@@ -181,7 +183,7 @@ class Searcher
      *
      * @param  string     $ip IP地址字符串（人类可读格式，如 "61.142.118.231"）
      * @return string     返回地区信息字符串，未找到返回空字符串
-     * @throws \Exception 当IP地址无效或搜索过程中发生错误时抛出异常
+     * @throws Exception 当IP地址无效或搜索过程中发生错误时抛出异常
      *
      * @example
      * ```php
@@ -194,7 +196,7 @@ class Searcher
     {
         $ipBytes = Util::parseIP($ip);
         if ($ipBytes == null) {
-            throw new \Exception("invalid ip address `{$ip}`");
+            throw new Exception("invalid ip address `{$ip}`");
         }
 
         return $this->searchByBytes($ipBytes);
@@ -208,7 +210,7 @@ class Searcher
      *
      * @param  string     $ipBytes 二进制格式的IP地址字节（由 parseIP 或 inet_pton 返回）
      * @return string     返回地区信息字符串，未找到返回空字符串
-     * @throws \Exception 当IP版本不匹配或搜索过程中发生错误时抛出异常
+     * @throws Exception 当IP版本不匹配或搜索过程中发生错误时抛出异常
      *
      * @example
      * ```php
@@ -222,7 +224,7 @@ class Searcher
     {
         // ip version check
         if (strlen($ipBytes) != $this->version->bytes) {
-            throw new \Exception("invalid ip address ({$this->version->name} expected)");
+            throw new Exception("invalid ip address ({$this->version->name} expected)");
         }
 
         // reset the global counter
@@ -293,7 +295,7 @@ class Searcher
      * @param  int        $offset 起始偏移量（索引位置）
      * @param  int        $len    要读取的字节长度
      * @return string     返回读取的数据
-     * @throws \Exception 当读取失败时抛出异常
+     * @throws Exception 当读取失败时抛出异常
      *
      * @example
      * ```php
@@ -310,17 +312,17 @@ class Searcher
         // read from the file
         $r = fseek($this->handle, $offset);
         if ($r == -1) {
-            throw new \Exception("failed to fseek to {$offset}");
+            throw new Exception("failed to fseek to {$offset}");
         }
 
         $this->ioCount++;
         $buff = fread($this->handle, $len);
         if ($buff === false) {
-            throw new \Exception("failed to fread from {$len}");
+            throw new Exception("failed to fread from {$len}");
         }
 
         if (strlen($buff) != $len) {
-            throw new \Exception("incomplete read: read bytes should be {$len}");
+            throw new Exception("incomplete read: read bytes should be {$len}");
         }
 
         return $buff;

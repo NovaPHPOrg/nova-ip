@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace nova\plugin\ip\ip2region\xdb;
 
+use Exception;
+
 /**
  * XDB 工具类
  *
@@ -889,7 +891,7 @@ class Util
      *
      * @param  string     $ver_name 版本名称
      * @return IPv4|IPv6  返回对应的版本对象
-     * @throws \Exception 当版本名称无效时抛出异常
+     * @throws Exception 当版本名称无效时抛出异常
      *
      * @example
      * ```php
@@ -905,7 +907,7 @@ class Util
         } elseif ($name == "V6" || $name == "IPV6") {
             return IPv6::default();
         } else {
-            throw new \Exception("invalid verstion name `{$ver_name}`");
+            throw new Exception("invalid verstion name `{$ver_name}`");
         }
     }
 
@@ -917,7 +919,7 @@ class Util
      *
      * @param  array      $header 头部信息数组
      * @return IPv4|IPv6  返回对应的版本对象
-     * @throws \Exception 当版本信息无效时抛出异常
+     * @throws Exception 当版本信息无效时抛出异常
      *
      * @example
      * ```php
@@ -934,7 +936,7 @@ class Util
 
         // structure 3.0 after IPv6 supporting
         if ($header['version'] != self::Structure_30) {
-            throw new \Exception("invalid xdb structure version `{$header['version']}`");
+            throw new Exception("invalid xdb structure version `{$header['version']}`");
         }
 
         if ($header['ipVersion'] == self::IPv4VersionNo) {
@@ -942,7 +944,7 @@ class Util
         } elseif ($header['ipVersion'] == self::IPv6VersionNo) {
             return IPv6::default();
         } else {
-            throw new \Exception("invalid ip version number `{$header['ipVersion']}`");
+            throw new Exception("invalid ip version number `{$header['ipVersion']}`");
         }
     }
 

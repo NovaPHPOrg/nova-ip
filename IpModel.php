@@ -9,7 +9,7 @@ use nova\framework\core\ArgObject;
 /**
  * IP 地理与网络归属信息。
  *
- * location 为国家/省/市拼接（` / ` 分隔）；org、as 通常需在线 API 补充。
+ * location 为国家/省/市拼接；merge 时 location 不带来源标记，isp/org/as 仍可选带来源。
  */
 class IpModel extends ArgObject
 {
@@ -20,6 +20,15 @@ class IpModel extends ArgObject
     private const string MERGE_GLUE = ' / ';
     /** @var string 地理定位（国家 / 省 / 市） */
     public string $location = '';
+
+    /** @var string 国家（ip2location 原始段，供翻译缓存） */
+    public string $country = '';
+
+    /** @var string 省/州（ip2location 原始段） */
+    public string $region = '';
+
+    /** @var string 城市（ip2location 原始段） */
+    public string $city = '';
 
     /** @var string 数据来源（merge 时写入括号标记） */
     public string $source = '';
@@ -97,6 +106,9 @@ class IpModel extends ArgObject
                 (string)($payload['region_name'] ?? ''),
                 (string)($payload['city_name'] ?? ''),
             ),
+            'country' => trim((string)($payload['country_name'] ?? '')),
+            'region' => trim((string)($payload['region_name'] ?? '')),
+            'city' => trim((string)($payload['city_name'] ?? '')),
             'isp' => $carrier,
             'org' => $carrier,
             'as' => $as,
@@ -143,7 +155,7 @@ class IpModel extends ArgObject
             }
 
             $key = self::geoKey($val);
-            $text = self::labelSource($val, $model->source);
+            $text = $val;
 
             if ($key === '') {
                 $picked[] = ['key' => '', 'text' => $text];
